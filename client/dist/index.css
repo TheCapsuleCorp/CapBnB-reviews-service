@@ -3,13 +3,82 @@
 }
 
 @font-face {
-  font-family: 'Avenir Next';
-  src: url('./assets/fonts/AvenirNext/AvenirNext-Regular.woff2') format('woff2');
+  font-family: 'Cereal';
+  src: url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Book.woff2') format('woff2'),
+       url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Book.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
 
+@font-face {
+  font-family: 'Cereal';
+  src: url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Light.woff2') format('woff2'),
+       url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cereal';
+  src: url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Medium.woff2') format('woff2'),
+       url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cereal';
+  src: url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Bold.woff2') format('woff2'),
+       url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cereal';
+  src: url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-ExtraBold.woff2') format('woff2'),
+       url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cereal';
+  src: url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Black.woff2') format('woff2'),
+       url('./assets/fonts/AirBnB-Cereal/AirbnbCerealApp-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+
+
 html, body, #app {
-  height: auto;
+  --main-bg-color: #fff;
+  --main-font-color: #4a4a4a;
+  --gray: #ccd1cb;
+  --red: #ff2559;
+  --teal: #007c87;
+
+  background-color: var(--main-bg-color);
+  color: var(--main-font-color);
+  font-family: 'Cereal', sans-serif;
+  height: 100%;
   margin: 0;
-  overscroll-behavior: none;
-  font-family: 'Avenir Next';
+  position: relative;
+  width: 100%;
+}
+
+.helloworld {
+  border-bottom: 2px solid var(--teal);
+  border-left: 2px solid var(--gray);
+  border-right: 2px solid var(--gray);
+  border-top: 2px solid var(--red);
+  box-shadow: 6px 18px 18px rgba(0, 0, 0, 0.08), -6px 18px 18px rgba(0, 0, 0, 0.08);
+  left: 50%;
+  margin: 0;
+  padding: 5%;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }

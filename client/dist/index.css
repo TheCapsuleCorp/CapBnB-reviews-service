@@ -1,0 +1,15 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Avenir Next';
+  src: url('./assets/fonts/AvenirNext/AvenirNext-Regular.woff2') format('woff2');
+}
+
+html, body, #app {
+  height: auto;
+  margin: 0;
+  overscroll-behavior: none;
+  font-family: 'Avenir Next';
+}

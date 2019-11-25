@@ -1,8 +1,9 @@
+const db = require('./database');
+const fs = require('fs');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
-const request = require('supertest');
 const path = require('path');
-const fs = require('fs');
+const request = require('supertest');
 
 const Rating = require('./database/models/rating.js');
 const Review = require('./database/models/review.js');
@@ -27,16 +28,14 @@ const mockReview = {
 
 describe('Express Server and MongoDB', () => {
   const app = require('./server/server.js');
-  let memMongo;
-  let server;
-
-  let agent;
+  let agent, memMongo, server;
 
   beforeAll(async (done) => {
     jest.setTimeout(10000);
 
     memMongo = await new MongoMemoryServer();
     process.env.MONGODB_URI = await memMongo.getConnectionString();
+    db.connect();
 
     await Rating.deleteMany();
     await Review.deleteMany();

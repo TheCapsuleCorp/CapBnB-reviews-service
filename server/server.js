@@ -1,8 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
-const db = require('../database');
-db.connect();
+
 const apiRouter = require('./apiRouter');
 
 const app = express();

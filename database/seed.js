@@ -57,7 +57,7 @@ const seedDB = function() {
     // console.log('Database connection closed.');
     return;
   }).catch(err => {
-    // console.log(`Error while seeding database: ${err}`);
+    console.log(`Error while seeding database: ${err}`);
   });
   return;
 };

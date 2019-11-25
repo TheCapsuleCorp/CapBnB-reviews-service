@@ -5,95 +5,141 @@ const path = require('path');
 const fs = require('fs');
 
 const Rating = require('./database/models/rating.js');
+const Review = require('./database/models/review.js');
 
-const seedDB = require('./database/seed.js');
+const mockRating = {
+  roomId: 11111111,
+  ratingCheckIn: 1.0,
+  ratingAccuracy: 2.0,
+  ratingLocation: 3.0,
+  ratingCommunication: 4.0,
+  ratingCleanliness: 5.0,
+  ratingValue: 4.5,
+};
 
-describe('Express Server Endpoints', () => {
-  const app = require('./server/index.js');
+const mockReview = {
+  roomId: 11111111,
+  username: 'Jamaican Beercan',
+  userAvatarURL: 'http://someurl.com/img1',
+  comment: 'This is a test comment!',
+  createdAt: new Date(),
+}
+
+describe('Express Server and MongoDB', () => {
+  const app = require('./server/server.js');
   let memMongo;
   let server;
 
   let agent;
 
-  beforeEach(async (done) => {
-    jest.setTimeout(120000);
+  beforeAll(async (done) => {
+    jest.setTimeout(10000);
 
     memMongo = await new MongoMemoryServer();
     process.env.MONGODB_URI = await memMongo.getConnectionString();
 
-    await Rating.create({
-      roomId: 1,
-      ratingCheckIn: 1,
-      ratingAccuracy: 1,
-      ratingLocation: 1,
-      ratingCommunication: 1,
-      ratingCleanliness: 1,
-      ratingValue: 1,
-    });
+    await Rating.deleteMany();
+    await Review.deleteMany();
+    await Rating.create(mockRating);
+    await Rating.create(mockRating);
+    await Review.create(mockReview);
 
     server = await app.listen(4000, (err) => {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
 
-       agent = request.agent(server); // since the application is already listening, it should use the allocated port
-       done();
+      agent = request.agent(server); // since the application is already listening, it should use the allocated port
+      done();
     });
   });
 
-  afterEach(async (done) => {
+  afterAll(async (done) => {
     await mongoose.disconnect();
-    // console.log(server.close);
     return server && await server.close(done);
   });
 
-  // afterAll(async () => {
-  // 	await new Promise(resolve => setTimeout(() => resolve(), 1000)); // avoid jest open handle error
-  // });
-
-  test('It should respond to the root path', async () => {
-    const res = await request(server).get('/api/rooms/1/ratings');
-    expect(res.statusCode).toBe(200);
-    expect(res.body[0].roomId).toBe(1);
+  test('Should respond with an error to invalid paths', async () => {
+    const res = await request(server).get('/ridiculous/rhinocerous');
+    expect(res.statusCode).toBe(404);
   });
 
-  // test('It should respond with an error to invalid paths', async () => {
-  //   const res = await request(server).get('/invalid/path');
-  //   expect(res.statusCode).toBe(404);
-  // });
-  //
-  // test('It should respond to requests to /rooms/:id', async () => {
-  //   const res = await request(server).get('/rooms/1');
-  //   expect(res.statusCode).toBe(200);
-  // });
-  //
-  // test('It should respond to requests to /rooms/:roomId/ratings', async () => {
-  //   const res = await request(server).get('/rooms/1/ratings');
-  //   expect(res.statusCode).toBe(200);
-  // });
-  //
-  // test('It should respond to requests to /rooms/:roomId/reviews', async () => {
-  //   const res = await request(server).get('/rooms/1/reviews');
-  //   expect(res.statusCode).toBe(200);
-  // });
-  //
-  // test('It should respond to static file requests from the dist directory', async () => {
-  //
-  //   const testFilePath = path.resolve(__dirname, '../client/dist/index.test.html');
-  //   const testHTML =
-  //     `<!DOCTYPE html>
-  //       <html>
-  //       <head>
-  //         <title>TestFilr</title>
-  //       </head>
-  //       <body>
-  //         This is a test
-  //
-  //       </body>
-  //     </html>`;
-  //
-  //   await fs.writeFileSync(testFilePath, testHTML);
-  //
-  //   const staticResponse = await request(server).get('/index.test.html');
-  //   expect(staticResponse.statusCode).toBe(200);
-  //   expect(staticResponse.text).toEqual(testHTML);
-  // });
+  test('Should respond to requests to /rooms/:roomsId', async () => {
+    const res = await request(server).get('/rooms/11111111');
+    expect(res.statusCode).toBe(200);
+  });
+
+  test('Should respond with a 200 OK to GET requests to /api/rooms/:roomId/ratings', async () => {
+    const res = await request(server).get('/api/rooms/11111111/ratings');
+    expect(res.statusCode).toBe(200);
+  });
+
+  test('Should retrieve all rating records from DB on GET requests to /api/rooms/:roomId/ratings', async () => {
+    const res = await request(server).get('/api/rooms/11111111/ratings');
+    expect(res.body[0].roomId).toBe(11111111);
+    expect(res.body.length).toBe(2);
+  });
+
+  test('Should retrieve an empty array from DB on GET requests to /api/rooms/:roomId/ratings for roomIds with with no ratings', async () => {
+    const res = await request(server).get('/api/rooms/33333333/ratings');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(0);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to POST requests to /api/rooms/:roomId/ratings', async () => {
+    const res = await request(server).post('/api/rooms/11111111/ratings');
+    expect(res.statusCode).toBe(405);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to PUT requests to /api/rooms/:roomId/ratings', async () => {
+    const res = await request(server).put('/api/rooms/11111111/ratings');
+    expect(res.statusCode).toBe(405);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to PATCH requests to /api/rooms/:roomId/ratings', async () => {
+    const res = await request(server).patch('/api/rooms/11111111/ratings');
+    expect(res.statusCode).toBe(405);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to DELETE requests to /api/rooms/:roomId/ratings', async () => {
+    const res = await request(server).delete('/api/rooms/11111111/ratings');
+    expect(res.statusCode).toBe(405);
+  });
+
+  test('Should respond with a 200 OK to GET requests to /api/rooms/:roomId/reviews', async () => {
+    const res = await request(server).get('/api/rooms/11111111/reviews');
+    expect(res.statusCode).toBe(200);
+  });
+
+  test('Should retrieve all rating records from DB on GET requests to /api/rooms/:roomId/reviews', async () => {
+    const res = await request(server).get('/api/rooms/11111111/reviews');
+    expect(res.body[0].roomId).toBe(11111111);
+    expect(res.body.length).toBe(1);
+  });
+
+  test('Should retrieve an empty array from DB on GET requests to /api/rooms/:roomId/reviews for roomIds with with no reviews', async () => {
+    const res = await request(server).get('/api/rooms/33333333/reviews');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(0);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to POST requests to /api/rooms/:roomId/reviews', async () => {
+    const res = await request(server).post('/api/rooms/11111111/reviews');
+    expect(res.statusCode).toBe(405);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to PUT requests to /api/rooms/:roomId/reviews', async () => {
+    const res = await request(server).put('/api/rooms/11111111/reviews');
+    expect(res.statusCode).toBe(405);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to PATCH requests to /api/rooms/:roomId/reviews', async () => {
+    const res = await request(server).patch('/api/rooms/11111111/reviews');
+    expect(res.statusCode).toBe(405);
+  });
+
+  test('Should respond with a 405 Method Not Allowed to DELETE requests to /api/rooms/:roomId/reviews', async () => {
+    const res = await request(server).delete('/api/rooms/11111111/reviews');
+    expect(res.statusCode).toBe(405);
+  });
 });

@@ -14,7 +14,7 @@ const DEFAULT_ROOM_ID = '11111111';
 ReactDOM.render(
   <Router>
     <Switch>
-      <Route path={`/rooms/:roomId`}>
+      <Route path={'/rooms/:roomId'}>
         <App />
       </Route>
       <Route exact path={'/'}>

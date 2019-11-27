@@ -3,15 +3,18 @@
  */
 
 module.exports = {
-  env: {
+  'env': {
     'es6': true
   },
-  parserOptions: {
-    ecmaFeatures: {
+  'parser': 'babel-eslint',
+  'parserOptions': {
+    'ecmaFeatures': {
       'jsx': true
-    }
+    },
+    'sourceType': 'module',
+    'allowImportExportEverywhere': true
   },
-  rules: {
+  'rules': {
     /* Indentation */
     'no-mixed-spaces-and-tabs': 2,
     'indent': [2, 2],
@@ -41,4 +44,3 @@ module.exports = {
     'quotes': [1, 'single']
   }
 };
-

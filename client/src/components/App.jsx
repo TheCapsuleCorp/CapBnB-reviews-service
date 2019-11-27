@@ -1,16 +1,12 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
+const App = () => {
+  const { roomId } = useParams();
 
-  render() {
-    return (
-      <div className="helloworld">Hello World!</div>
-    );
-  }
-}
+  return (
+    <div className="helloworld">Hello {roomId}!</div>
+  );
+};
 
 export default App;

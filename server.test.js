@@ -24,7 +24,7 @@ const mockReview = {
   userAvatarURL: 'http://someurl.com/img1',
   comment: 'This is a test comment!',
   createdAt: new Date(),
-}
+};
 
 describe('Express Server and MongoDB', () => {
   const app = require('./server/server.js');
